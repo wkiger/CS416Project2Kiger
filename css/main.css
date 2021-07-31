@@ -1,0 +1,131 @@
+/*set default text style */
+html {  
+    font-family: ariel, sans-serif; 
+}
+
+/*center header */
+h1{
+    text-align: center; 
+}
+
+h2{
+    text-align: center; 
+    font-size: 1.5 em; 
+}
+
+header{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    background-color: #000066;
+    color: #ff6600;
+    font-family: Arial, Helvetica, sans-serif;
+    border: 1px solid black;
+}
+
+header img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 2% 
+}
+
+main{
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-bottom: 3%; 
+}
+
+body{
+/*    text-align: center;*/
+    background-color: #D0E2EC;
+}
+
+footer{
+    margin-top: 40px;
+    background-color: darkgrey;
+    text-align: center;
+}
+
+#foot{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #ff6600;
+/*    background-color: darkgrey;*/
+    text-align: center;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+path { 
+/*    stroke: red;*/
+    stroke-width: 2;
+    fill: none;  
+/*    fill could show a regression line*/
+}
+
+.axis path {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 80px;					
+    height: 30;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: white;	
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
+}
+
+#selectButton{
+    background-color: #ff6600;
+}
+
+#chart_one{
+    text-align: center; 
+}
+
+#chart_two{
+    text-align: center; 
+}
+
+#chart_three{
+    text-align: center; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
