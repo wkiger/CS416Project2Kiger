@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>    
+    <title>Covid Stats</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">   
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <script src="scripts/main.js"></script>   
+	<script src='https://d3js.org/d3.v5.min.js'></script>	      
+    <!--this is how i am getting tool tips in v5-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+	 
+  </head>  
+    
+  <body>
+    <header>     
+        <h1>Covid Statistics in the United States</h1>
+        <a href="index.html"><img src="images/covid.png" alt="home"></a>
+    </header>  
+
+    <main>         
+        <nav>
+            <input type="button" style="background-color: #ff6600;" value="1" id="index">
+            <button class="page2" onclick="window.location.href='./page2.html'" style="background-color: lightgray;">2</button>
+            <button class="page3" onclick="window.location.href='./page3.html'" style="background-color: lightgray;">3</button>
+            <button class="next" onclick="window.location.href='./page2.html'" style="background-color: lightgray;"> >></button>
+        </nav>
+        
+        <p>The New York Times has been tracking Covid-19 data since the first known case in the United States was discovered in the State of Washington on January 21, 2020.  Since then, the Times has continually maintained a publicly available dataset from which this interactive slide show is derived.  Hover over the line graph to see the data! To further investigate, continue to the next slide and choose individual states to examine their number of Covid-19 infections and deaths. </p>
+        
+        <h2>Deaths in the United States from Covid-19</h2>
+        
+        <div id="chart_one"></div>
+        
+        <script>   
+            
+            var margin = {top: 20, right: 20, bottom: 30, left: 80},
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+            // translate date & time
+            var parseDate = d3.time.format("%Y-%m-%d").parse;//http://www.d3noob.org/2016/09/formatting-date-time-axis-with.html
+            //%e - space-padded day of the month as a decimal number [ 1,31], %B is full month name
+            var formatTime = d3.time.format("%B %e");
+
+            var x = d3.time.scale().range([0, width]);
+            var y = d3.scale.linear().range([height, 0]);
+
+            // x axis
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom").ticks(10)
+                .tickFormat(d3.time.format("%Y-%m-%d")); 
+            
+            //y axis
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .ticks(10)
+                .orient("left");
+            
+            //line
+            var valueline = d3.svg.line()
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d.deaths); });
+
+            //tooltip
+            var div = d3.select("#chart_one")
+                .append("div")	
+                .attr("class", "tooltip")				
+                .style("opacity", 0);
+
+            var svg = d3.select("#chart_one")
+                .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom + 60)  //had to add 60 to get x-axis to show whole date
+                .append("g")
+                    .attr("transform", 
+                          "translate(" + margin.left + "," + margin.top + ")");
+
+            //data read
+            d3.csv("data/us.csv", function(error, data) {
+                data.forEach(function(d) {
+                    d.date = parseDate(d.date);
+                    d.deaths = +d.deaths;
+                    //console.log(data); // this is correct
+                    //console.log(d.deaths); //this is correct
+                });
+
+                // scale the range of the data
+                x.domain(d3.extent(data, function(d) { return d.date; }));
+                y.domain([0, d3.max(data, function(d) { return d.deaths; })]);
+
+                // path.
+                svg.append("path")
+                    .attr("class", "line")
+                    .attr("d", valueline(data));
+
+                // scatterplot
+                svg.selectAll("dot")	
+                    .data(data)			
+                    .enter()
+                    .append("circle")								
+                    .attr("r", 3) //radius of scatter plot circles here	
+                    .attr("fill", "#cc0000") //little softer than red :) 
+                    .attr("cx", function(d) { return x(d.date); })		 
+                    .attr("cy", function(d) { return y(d.deaths); })		
+                    .on("mouseover", function(d) {		
+                        div.transition()		
+                            .duration(200)		
+                            .style("opacity", .9);		
+                        div	.html(formatTime(d.date) + "<br/>"  + "Deaths " + d.deaths)	
+                            .style("left", (d3.event.pageX) + "px")		
+                            .style("top", (d3.event.pageY - 28) + "px");	
+                        })					
+                    .on("mouseout", function(d) {		
+                        div.transition()		
+                            .duration(1000)		
+                            .style("opacity", 0);	
+                    });
+
+                //x Axis
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis)
+                    .selectAll("text")	
+                        .style("text-anchor", "end")
+                        .attr("dx", "5.5em") 
+                        .attr("dy", "-.15em") 
+                        .attr("transform", function(d) {
+                            return "rotate(65)" 
+                        });   
+                    
+                //y axis
+                svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis);
+            });
+    
+        </script> 
+   
+    </main>  
+      
+    <footer id="foot">     
+      &copy; William Kiger - UIUC CS416 Project #2 - Summer 2021
+    </footer> 
+  </body>
+</html>
+
+
+
+
+
